@@ -5,4 +5,4 @@ Atividade prática da disciplina de AEDs II com foco na análise de complexidade
 
 ## Aluno
 
-* Nome completo do aluno
+* Isaías Alves de Souza Santos
