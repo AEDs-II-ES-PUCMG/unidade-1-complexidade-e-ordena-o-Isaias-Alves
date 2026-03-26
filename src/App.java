@@ -38,7 +38,13 @@ public class App {
 
 
     public static void main(String[] args) {
-        int tam = 20;
+
+        for (int tam : tamanhosTestePequeno){
+            
+            System.out.println("\n" + "=".repeat(30));
+            System.out.println("TESTE COM TAMANHO: " + tam);
+            System.out.println("=".repeat(30));
+
         Integer[] vetor = gerarVetorObjetos(tam);
 
         BubbleSort<Integer> bolha = new BubbleSort<>();
@@ -67,4 +73,5 @@ public class App {
         System.out.println("Movimentações: " + selecao.getMovimentacoes());
         System.out.println("Tempo de ordenação (ms): " + selecao.getTempoOrdenacao());
     }
+}
 }
