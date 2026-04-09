@@ -3,13 +3,15 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Comparator;
 
-public class SelectionSort<T extends Comparable<T>> implements IOrdenador<T>{
-    private long comparacoes;
+
+public class InsertSort<T extends Comparable<T>> implements IOrdenador<T>{
+
+	private long comparacoes;
 	private long movimentacoes;
 	private LocalDateTime inicio;
 	private LocalDateTime termino;	
 	
-	public SelectionSort() {
+	public InsertSort() {
 		comparacoes = 0;
 		movimentacoes = 0;
 	}
@@ -18,7 +20,7 @@ public class SelectionSort<T extends Comparable<T>> implements IOrdenador<T>{
 	public T[] ordenar(T[] dados) {
 		return ordenar(dados, T::compareTo);
 	}
-	
+
 	@Override
 	public T[] ordenar(T[] dados, Comparator<T> comparador) {
 		T[] dadosOrdenados = Arrays.copyOf(dados, dados.length);
@@ -26,27 +28,29 @@ public class SelectionSort<T extends Comparable<T>> implements IOrdenador<T>{
 		
 		inicio = LocalDateTime.now();
 		
-		for (int posReferencia = 0; posReferencia < tamanho ; posReferencia++) {
-            int posMenor = posReferencia;
-			for (int posicao = posReferencia+1; posicao < tamanho; posicao++) {
-				comparacoes++;
-				if (comparador.compare(dadosOrdenados[posMenor],dadosOrdenados[posicao]) > 0){
-					posMenor = posicao;
-				}
-			}
-			swap(posReferencia, posMenor, dadosOrdenados);
+		for (int posReferencia = 1; posReferencia <= tamanho -1; posReferencia++) {
+			T valor = dadosOrdenados[posReferencia];
+            int j = posReferencia-1;
+            comparacoes++;
+            while(j >=0 && comparador.compare(valor,dadosOrdenados[j]) <0){
+                j--;
+                comparacoes++;
+            }
+                
+            copiarDados(j+1, posReferencia, dadosOrdenados);
+            dadosOrdenados[j+1] = valor;
+            
 		}	
 		termino = LocalDateTime.now();
 
 		return dadosOrdenados;
 	}
-
-	private void swap(int i, int j, T[] vet) {
-		movimentacoes++;
-		
-		T temp = vet[i];
-	    vet[i] = vet[j];
-	    vet[j] = temp;
+	
+	private void copiarDados(int inicio, int fim, T[] vet) {
+		for (int i = fim; i > inicio; i--) {
+            movimentacoes++;
+            vet[i] = vet[i-1];
+        }
 	}
 	
 	public long getComparacoes() {
@@ -60,4 +64,8 @@ public class SelectionSort<T extends Comparable<T>> implements IOrdenador<T>{
 	public double getTempoOrdenacao() {
 	    return  Duration.between(inicio, termino).toMillis();	    
 	}
+
+	
+
+	
 }
