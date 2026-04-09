@@ -174,13 +174,14 @@ public class App {
     }
 
     static Comparator<Produto> criteriosDeComparacao(int opcao) {
-        Comparator<Produto> comparador = null;
         if (opcao == 1) {
-            comparador = new ComparadorPadrao();
+            ComparadorPadrao comparador = new ComparadorPadrao();
+            return comparador;
         } else if (opcao == 2) {
-            comparador = new ComparadorPorCodigo();
+            ComparadorPorCodigo comparador = new ComparadorPorCodigo();
+            return comparador;
         }
-        return comparador;
+        return null;
     }
 
     static void ordenarProdutos() {
@@ -193,20 +194,20 @@ public class App {
         switch (opcao) {
             case 1:
                 ordenador = new Bubblesort<>() {};
-                ordenador.ordenar(produtos, criterio);
+                produtos = ordenador.ordenar(produtos, criterio);
 
                 break;
             case 2:
                 ordenador = new InsertSort<>() {};
-                ordenador.ordenar(produtos, criterio);
+                produtos = ordenador.ordenar(produtos, criterio);
                 break;
             case 3:
                 ordenador = new SelectionSort<>() {};
-                ordenador.ordenar(produtos, criterio);
+                produtos = ordenador.ordenar(produtos, criterio);
                 break;
             case 4:
                 ordenador = new Mergesort<>() {};
-                ordenador.ordenar(produtos, criterio);
+                produtos = ordenador.ordenar(produtos, criterio);
                 break;
         }
 
