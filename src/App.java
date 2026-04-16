@@ -35,6 +35,8 @@ public class App {
 
     static final int MAX_PEDIDOS = 100;
     static Produto[] produtos;
+    static Produto[] produtosPorId;
+    static Produto[] produtosPorDescricao;
     static int quantProdutos = 0;
     static String nomeArquivoDados = "produtos.txt";
     static IOrdenador<Produto> ordenador;
@@ -141,12 +143,8 @@ public class App {
             "Digite o identificador do produto",
             Integer.class
         );
-        Produto localizado = null;
 
-        for (int i = 0; i < quantProdutos && localizado == null; i++) {
-            if (produtos[i].hashCode() == numero) localizado = produtos[i];
-        }
-        return localizado;
+        return pesquisaBinariaPorID(produtosPorId, numero);
     }
 
     private static void mostrarProduto(Produto produto) {
@@ -240,10 +238,37 @@ public class App {
         }
     }
 
+    static Produto pesquisaBinariaPorID(Produto[] vetor, int idAlvo) {
+        int inicio = 0;
+        int fim = quantProdutos - 1;
+
+        while (inicio <= fim) {
+            int meio = (inicio + fim) / 2;
+            if (vetor[meio].hashCode() == idAlvo) {
+                return vetor[meio];
+            } else if (vetor[meio].hashCode() < idAlvo) {
+                inicio = meio + 1;
+            } else {
+                fim = meio - 1;
+            }
+        }
+        return null;
+    }
+
     public static void main(String[] args) {
         teclado = new Scanner(System.in);
 
         produtos = carregarProdutos(nomeArquivoDados);
+
+        IOrdenador<Produto> ordenadorParaSetup = new Mergesort<>();
+        produtosPorDescricao = ordenadorParaSetup.ordenar(
+            produtos,
+            new ComparadorPadrao()
+        );
+        produtosPorId = ordenadorParaSetup.ordenar(
+            produtos,
+            new ComparadorPorCodigo()
+        );
         embaralharProdutos();
 
         int opcao = -1;
