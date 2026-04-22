@@ -37,9 +37,11 @@ public class App {
     static Produto[] produtos;
     static Produto[] produtosPorId;
     static Produto[] produtosPorDescricao;
+    static Produto[] produtosPorPreco;
     static int quantProdutos = 0;
     static String nomeArquivoDados = "produtos.txt";
     static IOrdenador<Produto> ordenador;
+    static Comparator<Produto> criterio;
 
     // #region utilidades
     static Scanner teclado;
@@ -99,6 +101,8 @@ public class App {
         System.out.println("2 - Inserção");
         System.out.println("3 - Seleção");
         System.out.println("4 - Mergesort");
+        System.out.println("5 - Quicksort");
+        System.out.println("6 - Heapsort");
         System.out.println("0 - Finalizar");
 
         return lerNumero("Digite sua opção", Integer.class);
@@ -108,6 +112,7 @@ public class App {
         cabecalho();
         System.out.println("1 - Padrão");
         System.out.println("2 - Por código");
+        System.out.println("3 - Por preço");
 
         return lerNumero("Digite sua opção", Integer.class);
     }
@@ -178,38 +183,36 @@ public class App {
         } else if (opcao == 2) {
             ComparadorPorCodigo comparador = new ComparadorPorCodigo();
             return comparador;
+        } else if (opcao == 3) {
+            ComparadorPorPreco comparador = new ComparadorPorPreco();
+            return comparador;
         }
+
         return null;
     }
 
     static void ordenarProdutos() {
         cabecalho();
-
         int opcao = exibirMenuOrdenadores();
         int metodo = exibirMenuComparadores();
         Comparator<Produto> criterio = criteriosDeComparacao(metodo);
 
-        switch (opcao) {
-            case 1:
-                ordenador = new Bubblesort<>() {};
-                produtos = ordenador.ordenar(produtos, criterio);
+        if (criterio == null) return;
 
-                break;
-            case 2:
-                ordenador = new InsertSort<>() {};
-                produtos = ordenador.ordenar(produtos, criterio);
-                break;
-            case 3:
-                ordenador = new SelectionSort<>() {};
-                produtos = ordenador.ordenar(produtos, criterio);
-                break;
-            case 4:
-                ordenador = new Mergesort<>() {};
-                produtos = ordenador.ordenar(produtos, criterio);
-                break;
+        ordenador = switch (opcao) {
+            case 1 -> new Bubblesort<>();
+            case 2 -> new InsertSort<>();
+            case 3 -> new SelectionSort<>();
+            case 4 -> new Mergesort<>();
+            case 5 -> new QuickSort<>();
+            case 6 -> new HeapSort<>();
+            default -> null;
+        };
+
+        if (ordenador != null) {
+            produtos = ordenador.ordenar(produtos, criterio);
+            System.out.println("Comparações: " + ordenador.getComparacoes());
         }
-
-        ordenador = null;
     }
 
     static void embaralharProdutos() {
@@ -261,14 +264,22 @@ public class App {
         produtos = carregarProdutos(nomeArquivoDados);
 
         IOrdenador<Produto> ordenadorParaSetup = new Mergesort<>();
+
         produtosPorDescricao = ordenadorParaSetup.ordenar(
             produtos,
             new ComparadorPadrao()
         );
+
         produtosPorId = ordenadorParaSetup.ordenar(
             produtos,
             new ComparadorPorCodigo()
         );
+
+        produtosPorPreco = ordenadorParaSetup.ordenar(
+            produtos,
+            new ComparadorPorPreco()
+        );
+
         embaralharProdutos();
 
         int opcao = -1;
